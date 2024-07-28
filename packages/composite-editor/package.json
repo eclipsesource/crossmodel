@@ -1,0 +1,45 @@
+{
+  "name": "@crossbreeze/composite-editor",
+  "version": "0.0.0",
+  "private": true,
+  "description": "CrossModel Editor Contribution",
+  "keywords": [
+    "theia-extension"
+  ],
+  "homepage": "https://github.com/CrossBreezeNL/crossmodel",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CrossBreezeNL/crossmodel"
+  },
+  "license": "AGPL-3.0-or-later",
+  "author": {
+    "name": "CrossBreeze",
+    "email": "devops@crossbreeze.nl"
+  },
+  "files": [
+    "lib",
+    "src"
+  ],
+  "scripts": {
+    "build": "tsc -b",
+    "clean": "rimraf lib && rimraf tsconfig.tsbuildinfo",
+    "lint": "eslint -c ../../.eslintrc.js --ext .ts,.tsx ./src",
+    "prepare": "yarn clean && yarn build",
+    "test": "jest --passWithNoTests",
+    "watch": "tsc -w"
+  },
+  "dependencies": {
+    "@crossbreeze/core": "0.0.0",
+    "@crossbreeze/form-client": "0.0.0",
+    "@crossbreeze/glsp-client": "0.0.0",
+    "@eclipse-glsp/theia-integration": "2.2.1",
+    "@theia/core": "1.49.1",
+    "@theia/editor": "1.49.1",
+    "@theia/editor-preview": "1.49.1"
+  },
+  "theiaExtensions": [
+    {
+      "frontend": "lib/browser/editor-frontend-module"
+    }
+  ]
+}
