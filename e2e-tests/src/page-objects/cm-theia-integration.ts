@@ -4,6 +4,7 @@
 
 import { ContextMenuIntegration, Integration, IntegrationArgs, TheiaIntegrationOptions } from '@eclipse-glsp/glsp-playwright';
 import { Locator, Page } from '@playwright/test';
+import { TheiaAppFactory, TheiaAppLoader } from '@theia/playwright';
 import { CrossModelApp } from './crossmodel-app';
 import { CrossModelWorkspace } from './crossmodel-workspace';
 
@@ -31,7 +32,7 @@ export class CMTheiaIntegration extends Integration implements ContextMenuIntegr
 
    protected override async launch(): Promise<void> {
       const ws = new CrossModelWorkspace(this.options.workspace ? [this.options.workspace] : undefined);
-      this.theiaApp = await CrossModelApp.load(this.args, ws);
+      this.theiaApp = await TheiaAppLoader.load(this.args, ws, CrossModelApp as TheiaAppFactory<CrossModelApp>);
       this.theiaApp.integration = this;
       this.theiaApp.initialize(this.options);
    }

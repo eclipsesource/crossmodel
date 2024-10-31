@@ -1,18 +1,25 @@
 /********************************************************************************
  * Copyright (c) 2023 CrossBreeze.
  ********************************************************************************/
-import { expect } from '@playwright/test';
-import test from '../fixtures/crossmodel-fixture';
+import { expect, test } from '@playwright/test';
+import { CrossModelApp } from '../page-objects/crossmodel-app';
 import { CrossModelExplorerView } from '../page-objects/crossmodel-explorer-view';
 import { TheiaSingleInputDialog } from '../page-objects/theia-single-input-dialog';
 
 test.describe('CrossModel TabBar Toolbar', () => {
-   test.beforeEach(async ({ explorer }) => {
+   let app: CrossModelApp;
+   let explorer: CrossModelExplorerView;
+
+   test.beforeAll(async ({ browser, playwright }) => {
+      app = await CrossModelApp.load({ browser, playwright });
+      explorer = await app.openExplorerView();
+   });
+   test.beforeEach(async () => {
       await explorer.focus();
       await explorer.tabBarToolbar.waitForVisible();
    });
 
-   test('create new entity from tabbar toolbar', async ({ app, explorer }) => {
+   test('create new entity from tabbar toolbar', async () => {
       // Get the new-entity toolbar item.
       const tabBarToolbarNewEntity = await explorer.tabBarToolbar.toolBarItem('crossbreeze.new.entity.toolbar');
       expect(tabBarToolbarNewEntity).toBeDefined();
@@ -42,7 +49,7 @@ test.describe('CrossModel TabBar Toolbar', () => {
       }
    });
 
-   test('create new relationship from tabbar toolbar', async ({ app, explorer }) => {
+   test('create new relationship from tabbar toolbar', async () => {
       // Get the new-entity toolbar item.
       const tabBarToolbarNewEntity = await explorer.tabBarToolbar.toolBarItem('crossbreeze.new.relationship.toolbar');
       expect(tabBarToolbarNewEntity).toBeDefined();
@@ -72,7 +79,7 @@ test.describe('CrossModel TabBar Toolbar', () => {
       }
    });
 
-   test('create new diagram from tabbar toolbar', async ({ app, explorer }) => {
+   test('create new diagram from tabbar toolbar', async () => {
       // Get the new-entity toolbar item.
       const tabBarToolbarNewEntity = await explorer.tabBarToolbar.toolBarItem('crossbreeze.new.system-diagram.toolbar');
       expect(tabBarToolbarNewEntity).toBeDefined();

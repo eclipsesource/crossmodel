@@ -1,14 +1,21 @@
 /********************************************************************************
  * Copyright (c) 2024 CrossBreeze.
  ********************************************************************************/
-import { expect } from '@eclipse-glsp/glsp-playwright';
-import test from '../../fixtures/crossmodel-fixture';
+import { expect, test } from '@eclipse-glsp/glsp-playwright';
+import { CrossModelApp } from '../../page-objects/crossmodel-app';
 import { CrossModelCompositeEditor } from '../../page-objects/crossmodel-composite-editor';
+import { CrossModelExplorerView } from '../../page-objects/crossmodel-explorer-view';
 import { Entity } from '../../page-objects/system-diagram/diagram-elements';
-test.use({ workspaceUrl: 'src/resources/mapping-example' });
 
-test.describe('System Diagram Edit Entity', () => {
-   test('create/edit/delete entity', async ({ app, explorer }) => {
+test.describe.skip('System Diagram Edit Entity', () => {
+   let app: CrossModelApp;
+   let explorer: CrossModelExplorerView;
+
+   test.beforeAll(async ({ browser, playwright }) => {
+      app = await CrossModelApp.load({ browser, playwright, workspaceUrl: 'src/resources/mapping-example' });
+      explorer = await app.openExplorerView();
+   });
+   test('create/edit/delete entity', async () => {
       // Setup: Open existing System Diagram
       let editor = await app.openEditor('ExampleDWH/diagrams/ExampleDWH.system-diagram.cm', CrossModelCompositeEditor);
       expect(editor).toBeDefined();

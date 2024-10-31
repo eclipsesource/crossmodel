@@ -1,18 +1,29 @@
 /********************************************************************************
  * Copyright (c) 2023 CrossBreeze.
  ********************************************************************************/
-import { TheiaGLSPApp } from '@eclipse-glsp/glsp-playwright';
-import { PlaywrightWorkerArgs } from '@playwright/test';
-import { TheiaAppFactory, TheiaAppLoader, TheiaEditor, TheiaPlaywrightTestConfig } from '@theia/playwright';
+import { IntegrationArgs, TheiaGLSPApp } from '@eclipse-glsp/glsp-playwright';
+import { TheiaEditor } from '@theia/playwright';
 import { CMTheiaIntegration } from './cm-theia-integration';
-import { CrossModelWorkspace } from './crossmodel-workspace';
+import { CrossModelExplorerView } from './crossmodel-explorer-view';
 
+export interface CMAppArgs extends Omit<IntegrationArgs, 'page'> {
+   workspaceUrl?: string;
+   baseUrl?: string;
+}
 export class CrossModelApp extends TheiaGLSPApp {
-   public static async load(
-      args: TheiaPlaywrightTestConfig & PlaywrightWorkerArgs,
-      workspace: CrossModelWorkspace
-   ): Promise<CrossModelApp> {
-      return TheiaAppLoader.load(args, workspace, CrossModelApp as TheiaAppFactory<CrossModelApp>);
+   public static async load(args: CMAppArgs): Promise<CrossModelApp> {
+      const integration = new CMTheiaIntegration(
+         { browser: args.browser, page: {} as any, playwright: args.playwright },
+         {
+            type: 'Theia',
+            workspace: args.workspaceUrl ?? 'src/resources/sample-workspace',
+            widgetId: '',
+            url: args.baseUrl ?? 'http://localhost:3000'
+         }
+      );
+      await integration.initialize();
+      await integration.start();
+      return integration.app;
    }
 
    protected _integration: CMTheiaIntegration;
@@ -27,6 +38,12 @@ export class CrossModelApp extends TheiaGLSPApp {
 
    get integration(): CMTheiaIntegration {
       return this._integration;
+   }
+
+   async openExplorerView(): Promise<CrossModelExplorerView> {
+      const explorer = await this.openView(CrossModelExplorerView);
+      await explorer.waitForVisibleFileNodes();
+      return explorer;
    }
 
    override openEditor<T extends TheiaEditor>(

@@ -1,8 +1,9 @@
 /********************************************************************************
  * Copyright (c) 2023 CrossBreeze.
  ********************************************************************************/
-import { expect, Page } from '@playwright/test';
-import test from '../fixtures/crossmodel-fixture';
+import { expect, Page, test } from '@playwright/test';
+import { CrossModelApp } from '../page-objects/crossmodel-app';
+import { CrossModelExplorerView } from '../page-objects/crossmodel-explorer-view';
 
 async function checkOpenWithItem(page: Page, text: string): Promise<boolean> {
    // Locate all elements matching the selector
@@ -21,7 +22,15 @@ async function checkOpenWithItem(page: Page, text: string): Promise<boolean> {
 }
 
 test.describe('CrossModel Explorer View', () => {
-   test('code and form editor options available in the context menu on an entity', async ({ explorer }) => {
+   let app: CrossModelApp;
+   let explorer: CrossModelExplorerView;
+
+   test.beforeAll(async ({ browser, playwright }) => {
+      app = await CrossModelApp.load({ browser, playwright });
+      explorer = await app.openExplorerView();
+   });
+
+   test('code and form editor options available in the context menu on an entity', async () => {
       const file = await explorer.getFileStatNodeByLabel('example-entity.entity.cm');
       expect(file).toBeDefined();
       expect(await file.label()).toBe('example-entity.entity.cm');
@@ -34,7 +43,7 @@ test.describe('CrossModel Explorer View', () => {
       await menu.close();
    });
 
-   test('code and form editor options available in the context menu on a relationship', async ({ explorer }) => {
+   test('code and form editor options available in the context menu on a relationship', async () => {
       const file = await explorer.getFileStatNodeByLabel('example-relationship.relationship.cm');
       expect(file).toBeDefined();
       expect(await file.label()).toBe('example-relationship.relationship.cm');
@@ -47,7 +56,7 @@ test.describe('CrossModel Explorer View', () => {
       await menu.close();
    });
 
-   test('code and diagram editor options available in the context menu on a diagram', async ({ explorer }) => {
+   test('code and diagram editor options available in the context menu on a diagram', async () => {
       const file = await explorer.getFileStatNodeByLabel('example-diagram.diagram.cm');
       expect(file).toBeDefined();
       expect(await file.label()).toBe('example-diagram.diagram.cm');
