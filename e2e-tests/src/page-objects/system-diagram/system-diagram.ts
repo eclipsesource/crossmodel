@@ -18,7 +18,7 @@ import {
    PNodeConstructor
 } from '@eclipse-glsp/glsp-playwright';
 import { Locator } from '@playwright/test';
-import { SystemToolBox } from './system-tool-box';
+import { SystemToolBox, SystemTools } from './system-tool-box';
 
 export class SystemDiagram extends GLSPSemanticApp {
    override readonly toolPalette: SystemToolBox;
@@ -36,6 +36,11 @@ export class SystemDiagram extends GLSPSemanticApp {
 
    protected override createToolPalette(): SystemToolBox {
       return new SystemToolBox({ locator: SystemToolBox.locate(this) });
+   }
+
+   async enableTool(tool: SystemTools['default']): Promise<void> {
+      const paletteItem = await this.toolPalette.content.toolElement('default', tool);
+      return paletteItem.click();
    }
 }
 

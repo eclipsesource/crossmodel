@@ -74,7 +74,7 @@ export class CrossModelCompositeEditor extends TheiaEditor {
          this.app as CrossModelApp,
          this.editorTabSelector('System Diagram')
       );
-      await diagramEditor.waitForVisible();
+      await diagramEditor.diagram.graph.waitForVisible();
       return diagramEditor;
    }
 
