@@ -2,10 +2,7 @@
  * Copyright (c) 2023 CrossBreeze.
  ********************************************************************************/
 import { expect, Page } from '@playwright/test';
-import test, { app } from '../fixtures/crossmodel-fixture';
-import { CrossModelExplorerView } from '../page-objects/crossmodel-explorer-view';
-
-let explorer: CrossModelExplorerView;
+import test from '../fixtures/crossmodel-fixture';
 
 async function checkOpenWithItem(page: Page, text: string): Promise<boolean> {
    // Locate all elements matching the selector
@@ -24,12 +21,7 @@ async function checkOpenWithItem(page: Page, text: string): Promise<boolean> {
 }
 
 test.describe('CrossModel Explorer View', () => {
-   test.beforeAll(async ({ browser }) => {
-      explorer = await app.openView(CrossModelExplorerView);
-      await explorer.waitForVisibleFileNodes();
-   });
-
-   test('code and form editor options available in the context menu on an entity', async () => {
+   test('code and form editor options available in the context menu on an entity', async ({ explorer }) => {
       const file = await explorer.getFileStatNodeByLabel('example-entity.entity.cm');
       expect(file).toBeDefined();
       expect(await file.label()).toBe('example-entity.entity.cm');
@@ -42,7 +34,7 @@ test.describe('CrossModel Explorer View', () => {
       await menu.close();
    });
 
-   test('code and form editor options available in the context menu on a relationship', async () => {
+   test('code and form editor options available in the context menu on a relationship', async ({ explorer }) => {
       const file = await explorer.getFileStatNodeByLabel('example-relationship.relationship.cm');
       expect(file).toBeDefined();
       expect(await file.label()).toBe('example-relationship.relationship.cm');
@@ -55,7 +47,7 @@ test.describe('CrossModel Explorer View', () => {
       await menu.close();
    });
 
-   test('code and diagram editor options available in the context menu on a diagram', async () => {
+   test('code and diagram editor options available in the context menu on a diagram', async ({ explorer }) => {
       const file = await explorer.getFileStatNodeByLabel('example-diagram.diagram.cm');
       expect(file).toBeDefined();
       expect(await file.label()).toBe('example-diagram.diagram.cm');

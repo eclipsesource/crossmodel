@@ -1,0 +1,34 @@
+mapping:
+    id: CompleteCustomerMapping
+    sources:
+      - id: CustomerSourceObject
+        entity: ExampleCRM.Customer
+        join: from
+      - id: CalcAgeSourceObject
+        entity: ExampleDWH.CalcAge
+        join: apply
+        dependencies:
+          - CustomerSourceObject
+        conditions:
+          - CalcAgeSourceObject.BirthDate = CustomerSourceObject.BirthDate
+    target:
+        entity: ExampleDWH.CompleteCustomer
+        mappings:
+          - attribute: Country
+            sources:
+              - CustomerSourceObject.Country
+          - attribute: FixedNumber
+            expression: "1"
+          - attribute: FixedString
+            expression: "Hoppa"
+          - attribute: Name
+            sources:
+              - CustomerSourceObject.FirstName
+              - CustomerSourceObject.LastName
+            expression: "CONCAT_WS({{CustomerSourceObject.FirstName}}, {{CustomerSourceObject.LastName}}, ' ')"
+          - attribute: Age
+            sources:
+              - CustomerSourceObject.BirthDate
+            expression: "DATEDIFF(YEAR, NOW(), {{CustomerSourceObject.BirthDate}})"
+          - attribute: Today
+            expression: "GETDATE()"

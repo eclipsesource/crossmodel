@@ -2,11 +2,11 @@
  * Copyright (c) 2023 CrossBreeze.
  ********************************************************************************/
 import { expect } from '@playwright/test';
-import test, { app } from '../fixtures/crossmodel-fixture';
+import test from '../fixtures/crossmodel-fixture';
 import { CrossModelCompositeEditor } from '../page-objects/crossmodel-composite-editor';
 
 test.describe('CrossModel Error Views', () => {
-   test('Form Editor should show error if model code is broken', async () => {
+   test('Form Editor should show error if model code is broken', async ({ app }) => {
       const editor = await app.openEditor('example-entity.entity.cm', CrossModelCompositeEditor);
       expect(editor).toBeDefined();
 
@@ -23,7 +23,7 @@ test.describe('CrossModel Error Views', () => {
       ).toBeTruthy();
    });
 
-   test('System Diagram Editor should show error if model code is broken', async () => {
+   test('System Diagram Editor should show error if model code is broken', async ({ app }) => {
       const editor = await app.openEditor('example-diagram.diagram.cm', CrossModelCompositeEditor);
       expect(editor).toBeDefined();
 

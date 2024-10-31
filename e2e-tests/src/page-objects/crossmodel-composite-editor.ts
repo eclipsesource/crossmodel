@@ -6,13 +6,16 @@ import { ElementHandle, Page } from '@playwright/test';
 import { isElementVisible, normalizeId, OSUtil, TheiaApp, TheiaEditor, TheiaTextEditor, urlEncodePath } from '@theia/playwright';
 import { TheiaMonacoEditor } from '@theia/playwright/lib/theia-monaco-editor';
 import { join } from 'path';
+import { CMTheiaIntegration } from './cm-theia-integration';
+import { CrossModelApp } from './crossmodel-app';
+import { SystemDiagram } from './system-diagram/system-diagram';
 
 export type CompositeEditorName = 'Code Editor' | 'Form Editor' | 'System Diagram' | 'Mapping Diagram';
 
 export class CrossModelCompositeEditor extends TheiaEditor {
    constructor(
       protected filePath: string,
-      app: TheiaApp
+      app: CrossModelApp
    ) {
       // shell-tab-code-editor-opener:file:///c%3A/Users/user/AppData/Local/Temp/cloud-ws-JBUhb6/sample.txt:1
       // code-editor-opener:file:///c%3A/Users/user/AppData/Local/Temp/cloud-ws-JBUhb6/sample.txt:1
@@ -66,7 +69,11 @@ export class CrossModelCompositeEditor extends TheiaEditor {
 
    async switchToSystemDiagram(): Promise<IntegratedSystemDiagramEditor> {
       await this.switchToEditor('System Diagram');
-      const diagramEditor = new IntegratedSystemDiagramEditor(this.filePath, this.app, this.editorTabSelector('System Diagram'));
+      const diagramEditor = new IntegratedSystemDiagramEditor(
+         this.filePath,
+         this.app as CrossModelApp,
+         this.editorTabSelector('System Diagram')
+      );
       await diagramEditor.waitForVisible();
       return diagramEditor;
    }
@@ -111,7 +118,8 @@ export class IntegratedFormEditor extends TheiaEditor {
 }
 
 export class IntegratedSystemDiagramEditor extends TheiaEditor {
-   constructor(filePath: string, app: TheiaApp, tabSelector: string) {
+   diagram: SystemDiagram;
+   constructor(filePath: string, app: CrossModelApp, tabSelector: string) {
       super(
          {
             tabSelector,
@@ -121,6 +129,11 @@ export class IntegratedSystemDiagramEditor extends TheiaEditor {
          },
          app
       );
+      this.diagram = this.createSystemDiagram(app.integration);
+   }
+
+   protected createSystemDiagram(integration: CMTheiaIntegration): SystemDiagram {
+      return new SystemDiagram({ type: 'integration', integration });
    }
 
    async hasError(errorMessage: string): Promise<boolean> {

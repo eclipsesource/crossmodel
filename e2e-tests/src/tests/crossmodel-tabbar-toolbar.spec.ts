@@ -2,29 +2,19 @@
  * Copyright (c) 2023 CrossBreeze.
  ********************************************************************************/
 import { expect } from '@playwright/test';
-import test, { app } from '../fixtures/crossmodel-fixture';
+import test from '../fixtures/crossmodel-fixture';
 import { CrossModelExplorerView } from '../page-objects/crossmodel-explorer-view';
 import { TheiaSingleInputDialog } from '../page-objects/theia-single-input-dialog';
-import { TheiaTabBarToolbar } from '../page-objects/theia-tabbar-toolbar';
-
-let explorer: CrossModelExplorerView;
-let tabBarToolbar: TheiaTabBarToolbar;
 
 test.describe('CrossModel TabBar Toolbar', () => {
-   test.beforeAll(async ({ browser }) => {
-      explorer = await app.openView(CrossModelExplorerView);
-      await explorer.waitForVisibleFileNodes();
-      tabBarToolbar = explorer.tabBarToolbar;
-   });
-
-   test.beforeEach(async () => {
+   test.beforeEach(async ({ explorer }) => {
       await explorer.focus();
-      await tabBarToolbar.waitForVisible();
+      await explorer.tabBarToolbar.waitForVisible();
    });
 
-   test('create new entity from tabbar toolbar', async () => {
+   test('create new entity from tabbar toolbar', async ({ app, explorer }) => {
       // Get the new-entity toolbar item.
-      const tabBarToolbarNewEntity = await tabBarToolbar.toolBarItem('crossbreeze.new.entity.toolbar');
+      const tabBarToolbarNewEntity = await explorer.tabBarToolbar.toolBarItem('crossbreeze.new.entity.toolbar');
       expect(tabBarToolbarNewEntity).toBeDefined();
       if (tabBarToolbarNewEntity) {
          // expect(await tabBarToolbarNewEntity.isEnabled()).toBe(true);
@@ -52,9 +42,9 @@ test.describe('CrossModel TabBar Toolbar', () => {
       }
    });
 
-   test('create new relationship from tabbar toolbar', async () => {
+   test('create new relationship from tabbar toolbar', async ({ app, explorer }) => {
       // Get the new-entity toolbar item.
-      const tabBarToolbarNewEntity = await tabBarToolbar.toolBarItem('crossbreeze.new.relationship.toolbar');
+      const tabBarToolbarNewEntity = await explorer.tabBarToolbar.toolBarItem('crossbreeze.new.relationship.toolbar');
       expect(tabBarToolbarNewEntity).toBeDefined();
       if (tabBarToolbarNewEntity) {
          // expect(await tabBarToolbarNewEntity.isEnabled()).toBe(true);
@@ -82,9 +72,9 @@ test.describe('CrossModel TabBar Toolbar', () => {
       }
    });
 
-   test('create new diagram from tabbar toolbar', async () => {
+   test('create new diagram from tabbar toolbar', async ({ app, explorer }) => {
       // Get the new-entity toolbar item.
-      const tabBarToolbarNewEntity = await tabBarToolbar.toolBarItem('crossbreeze.new.system-diagram.toolbar');
+      const tabBarToolbarNewEntity = await explorer.tabBarToolbar.toolBarItem('crossbreeze.new.system-diagram.toolbar');
       expect(tabBarToolbarNewEntity).toBeDefined();
       if (tabBarToolbarNewEntity) {
          // expect(await tabBarToolbarNewEntity.isEnabled()).toBe(true);
