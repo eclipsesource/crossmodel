@@ -2,8 +2,8 @@
  * Copyright (c) 2023 CrossBreeze.
  ********************************************************************************/
 import { expect, Page, test } from '@playwright/test';
-import { CrossModelApp } from '../page-objects/crossmodel-app';
-import { CrossModelExplorerView } from '../page-objects/crossmodel-explorer-view';
+import { CMApp } from '../page-objects/cm-app';
+import { CMExplorerView } from '../page-objects/cm-explorer-view';
 
 async function checkOpenWithItem(page: Page, text: string): Promise<boolean> {
    // Locate all elements matching the selector
@@ -22,11 +22,11 @@ async function checkOpenWithItem(page: Page, text: string): Promise<boolean> {
 }
 
 test.describe('CrossModel Explorer View', () => {
-   let app: CrossModelApp;
-   let explorer: CrossModelExplorerView;
+   let app: CMApp;
+   let explorer: CMExplorerView;
 
    test.beforeAll(async ({ browser, playwright }) => {
-      app = await CrossModelApp.load({ browser, playwright });
+      app = await CMApp.load({ browser, playwright });
       explorer = await app.openExplorerView();
    });
 

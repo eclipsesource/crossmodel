@@ -2,16 +2,16 @@
  * Copyright (c) 2023 CrossBreeze.
  ********************************************************************************/
 import { expect, test } from '@playwright/test';
-import { CrossModelApp } from '../page-objects/crossmodel-app';
-import { CrossModelExplorerView } from '../page-objects/crossmodel-explorer-view';
+import { CMApp } from '../page-objects/cm-app';
+import { CMExplorerView } from '../page-objects/cm-explorer-view';
 import { TheiaSingleInputDialog } from '../page-objects/theia-single-input-dialog';
 
 test.describe('CrossModel TabBar Toolbar', () => {
-   let app: CrossModelApp;
-   let explorer: CrossModelExplorerView;
+   let app: CMApp;
+   let explorer: CMExplorerView;
 
    test.beforeAll(async ({ browser, playwright }) => {
-      app = await CrossModelApp.load({ browser, playwright });
+      app = await CMApp.load({ browser, playwright });
       explorer = await app.openExplorerView();
    });
    test.beforeEach(async () => {
@@ -42,7 +42,7 @@ test.describe('CrossModel TabBar Toolbar', () => {
          // Wait until the dialog is closed.
          await newEntityDialog.waitForClosed();
 
-         explorer = await app.openView(CrossModelExplorerView);
+         explorer = await app.openView(CMExplorerView);
          const file = await explorer.getFileStatNodeByLabel('entity-created-from-tabbar-toolbar.entity.cm');
          expect(file).toBeDefined();
          expect(await file.label()).toBe('entity-created-from-tabbar-toolbar.entity.cm');
@@ -72,7 +72,7 @@ test.describe('CrossModel TabBar Toolbar', () => {
          // Wait until the dialog is closed.
          await newRelationshipDialog.waitForClosed();
 
-         explorer = await app.openView(CrossModelExplorerView);
+         explorer = await app.openView(CMExplorerView);
          const file = await explorer.getFileStatNodeByLabel('relationship-created-from-tabbar-toolbar.relationship.cm');
          expect(file).toBeDefined();
          expect(await file.label()).toBe('relationship-created-from-tabbar-toolbar.relationship.cm');
@@ -102,7 +102,7 @@ test.describe('CrossModel TabBar Toolbar', () => {
          // Wait until the dialog is closed.
          await newDiagramDialog.waitForClosed();
 
-         explorer = await app.openView(CrossModelExplorerView);
+         explorer = await app.openView(CMExplorerView);
          const file = await explorer.getFileStatNodeByLabel('diagram-created-from-tabbar-toolbar.system-diagram.cm');
          expect(file).toBeDefined();
          expect(await file.label()).toBe('diagram-created-from-tabbar-toolbar.system-diagram.cm');

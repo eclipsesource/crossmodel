@@ -4,7 +4,7 @@
 import { TheiaApp, TheiaExplorerView } from '@theia/playwright';
 import { TheiaTabBarToolbar } from './theia-tabbar-toolbar';
 
-export class CrossModelExplorerView extends TheiaExplorerView {
+export class CMExplorerView extends TheiaExplorerView {
    public readonly tabBarToolbar: TheiaTabBarToolbar;
 
    constructor(app: TheiaApp) {

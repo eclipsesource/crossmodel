@@ -5,17 +5,17 @@
 import { ContextMenuIntegration, Integration, IntegrationArgs, TheiaIntegrationOptions } from '@eclipse-glsp/glsp-playwright';
 import { Locator, Page } from '@playwright/test';
 import { TheiaAppFactory, TheiaAppLoader } from '@theia/playwright';
-import { CrossModelApp } from './crossmodel-app';
-import { CrossModelWorkspace } from './crossmodel-workspace';
+import { CMApp } from './cm-app';
+import { CMWorkspace } from './cm-workspace';
 
 export class CMTheiaIntegration extends Integration implements ContextMenuIntegration {
-   protected theiaApp: CrossModelApp;
+   protected theiaApp: CMApp;
 
    override get page(): Page {
       return this.theiaApp.page;
    }
 
-   get app(): CrossModelApp {
+   get app(): CMApp {
       return this.theiaApp;
    }
 
@@ -31,8 +31,8 @@ export class CMTheiaIntegration extends Integration implements ContextMenuIntegr
    }
 
    protected override async launch(): Promise<void> {
-      const ws = new CrossModelWorkspace(this.options.workspace ? [this.options.workspace] : undefined);
-      this.theiaApp = await TheiaAppLoader.load(this.args, ws, CrossModelApp as TheiaAppFactory<CrossModelApp>);
+      const ws = new CMWorkspace(this.options.workspace ? [this.options.workspace] : undefined);
+      this.theiaApp = await TheiaAppLoader.load(this.args, ws, CMApp as TheiaAppFactory<CMApp>);
       this.theiaApp.integration = this;
       this.theiaApp.initialize(this.options);
    }

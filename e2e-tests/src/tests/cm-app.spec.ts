@@ -2,13 +2,13 @@
  * Copyright (c) 2023 CrossBreeze.
  ********************************************************************************/
 import { expect, test } from '@playwright/test';
-import { CrossModelApp } from '../page-objects/crossmodel-app';
+import { CMApp } from '../page-objects/cm-app';
 
 test.describe('CrossModel App', () => {
-   let app: CrossModelApp;
+   let app: CMApp;
 
    test.beforeAll(async ({ browser, playwright }) => {
-      app = await CrossModelApp.load({ browser, playwright });
+      app = await CMApp.load({ browser, playwright });
    });
 
    test('main content panel visible', async () => {

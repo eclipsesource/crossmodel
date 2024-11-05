@@ -2,17 +2,17 @@
  * Copyright (c) 2023 CrossBreeze.
  ********************************************************************************/
 import { expect, test } from '@playwright/test';
-import { CrossModelApp } from '../page-objects/crossmodel-app';
-import { CrossModelCompositeEditor } from '../page-objects/crossmodel-composite-editor';
+import { CMApp } from '../page-objects/cm-app';
+import { CMCompositeEditor } from '../page-objects/cm-composite-editor';
 
 test.describe('CrossModel Error Views', () => {
-   let app: CrossModelApp;
+   let app: CMApp;
 
    test.beforeAll(async ({ browser, playwright }) => {
-      app = await CrossModelApp.load({ browser, playwright });
+      app = await CMApp.load({ browser, playwright });
    });
    test('Form Editor should show error if model code is broken', async () => {
-      const editor = await app.openEditor('example-entity.entity.cm', CrossModelCompositeEditor);
+      const editor = await app.openEditor('example-entity.entity.cm', CMCompositeEditor);
       expect(editor).toBeDefined();
 
       const codeEditor = await editor.switchToCodeEditor();
@@ -29,7 +29,7 @@ test.describe('CrossModel Error Views', () => {
    });
 
    test('System Diagram Editor should show error if model code is broken', async () => {
-      const editor = await app.openEditor('example-diagram.diagram.cm', CrossModelCompositeEditor);
+      const editor = await app.openEditor('example-diagram.diagram.cm', CMCompositeEditor);
       expect(editor).toBeDefined();
 
       const codeEditor = await editor.switchToCodeEditor();
