@@ -18,7 +18,7 @@ test.describe.serial('Add existing entity to a diagram', () => {
       await app.page.close();
    });
 
-   test.skip('Add existing entity via toolbox', async () => {
+   test('Add existing entity via toolbox', async () => {
       const diagramEditor = await app.openCompositeEditor(SYSTEM_DIAGRAM_PATH, 'System Diagram');
       const diagram = diagramEditor.diagram;
       // Create new entity
@@ -43,7 +43,7 @@ test.describe.serial('Add existing entity to a diagram', () => {
       await diagramCodeEditor.saveAndClose();
    });
 
-   test.skip('Add existing entity via keyboard shortcut', async () => {
+   test('Add existing entity via keyboard shortcut', async () => {
       const diagramEditor = await app.openCompositeEditor(SYSTEM_DIAGRAM_PATH, 'System Diagram');
       const diagram = diagramEditor.diagram;
       // Create new entity
