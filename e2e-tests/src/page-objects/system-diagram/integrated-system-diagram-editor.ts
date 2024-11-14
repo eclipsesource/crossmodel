@@ -2,6 +2,7 @@
  * Copyright (c) 2024 CrossBreeze.
  ********************************************************************************/
 
+import { GLSPBaseCommandPalette, PModelElement, PModelElementConstructor } from '@eclipse-glsp/glsp-playwright';
 import { OSUtil, normalizeId, urlEncodePath } from '@theia/playwright';
 import { join } from 'path';
 import { CMCompositeEditor, hasViewError } from '../cm-composite-editor';
@@ -9,11 +10,11 @@ import { IntegratedEditor } from '../cm-integrated-editor';
 import { CMTheiaIntegration } from '../cm-theia-integration';
 import { EntityPropertiesView } from '../form/entiy-form';
 import { Entity } from './diagram-elements';
-import { SystemDiagram } from './system-diagram';
+import { SystemDiagram, WaitForModelUpdateOptions } from './system-diagram';
 import { SystemTools } from './system-tool-box';
 
 export class IntegratedSystemDiagramEditor extends IntegratedEditor {
-   diagram: SystemDiagram;
+   readonly diagram: SystemDiagram;
    constructor(filePath: string, parent: CMCompositeEditor, tabSelector: string) {
       super(
          {
@@ -25,6 +26,10 @@ export class IntegratedSystemDiagramEditor extends IntegratedEditor {
          parent
       );
       this.diagram = this.createSystemDiagram(parent.app.integration);
+   }
+
+   get globalCommandPalette(): GLSPBaseCommandPalette {
+      return this.diagram.globalCommandPalette;
    }
 
    override waitForVisible(): Promise<void> {
@@ -48,6 +53,10 @@ export class IntegratedSystemDiagramEditor extends IntegratedEditor {
       return this.diagram.graph.getNodeByLabel(entityLabel, Entity);
    }
 
+   async getEntities(entityLabel: string): Promise<Entity[]> {
+      return this.diagram.graph.getNodesByLabel(entityLabel, Entity);
+   }
+
    async findEntity(entityLabel: string): Promise<Entity | undefined> {
       const entities = await this.diagram.graph.getNodesByLabel(entityLabel, Entity);
       return entities.length > 0 ? entities[0] : undefined;
@@ -57,6 +66,17 @@ export class IntegratedSystemDiagramEditor extends IntegratedEditor {
       const entity = await this.diagram.graph.getNodeByLabel(entityLabel, Entity);
       await entity.select();
       return this.app.openView(EntityPropertiesView);
+   }
+
+   waitForModelUpdate(executor: () => Promise<void>, options?: WaitForModelUpdateOptions): Promise<void> {
+      return this.diagram.graph.waitForModelUpdate(executor, options);
+   }
+
+   waitForCreationOfType<TElement extends PModelElement>(
+      constructor: PModelElementConstructor<TElement>,
+      creator: () => Promise<void>
+   ): Promise<TElement[]> {
+      return this.diagram.graph.waitForCreationOfType(constructor, creator);
    }
 
    override isDirty(): Promise<boolean> {

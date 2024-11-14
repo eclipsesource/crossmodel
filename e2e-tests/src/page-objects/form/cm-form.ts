@@ -2,6 +2,7 @@
  * Copyright (c) 2024 CrossBreeze.
  ********************************************************************************/
 
+import { waitForFunction } from '@eclipse-glsp/glsp-playwright';
 import { ElementHandle, Locator } from '@playwright/test';
 import { TheiaApp, TheiaEditor, TheiaPageObject, TheiaView, isElementVisible } from '@theia/playwright';
 import { TheiaViewObject } from '../theia-view-object';
@@ -18,6 +19,7 @@ export type FormType = keyof typeof FormIcons;
 export abstract class CMForm extends TheiaViewObject {
    protected abstract iconClass: string;
    protected typeSelector: string;
+
    readonly locator: Locator;
    constructor(view: TheiaView, relativeSelector: string, type: FormType) {
       super(view, relativeSelector);
@@ -43,14 +45,21 @@ export abstract class CMForm extends TheiaViewObject {
       const text = await title?.textContent();
       return text?.endsWith('*') ?? false;
    }
+
+   async waitForDirty(): Promise<void> {
+      await waitForFunction(async () => this.isDirty());
+   }
 }
 
 export abstract class FormSection extends TheiaPageObject {
-   readonly sectionLocator: Locator;
+   readonly locator: Locator;
 
-   constructor(form: CMForm, sectionName: string) {
+   constructor(
+      readonly form: CMForm,
+      sectionName: string
+   ) {
       super(form.app);
-      this.sectionLocator = form.locator.locator(`div.MuiAccordion-root:has(h6:has-text("${sectionName}"))`);
+      this.locator = form.locator.locator(`div.MuiAccordion-root:has(h6:has-text("${sectionName}"))`);
    }
 }
 

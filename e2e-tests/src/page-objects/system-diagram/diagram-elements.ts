@@ -7,8 +7,10 @@ import {
    ModelElementMetadata,
    NodeMetadata,
    PLabel,
+   PModelElement,
    PNode,
    SVGMetadataUtils,
+   defined,
    useClickableFlow,
    useCommandPaletteCapability,
    useDeletableFlow,
@@ -53,5 +55,22 @@ export class Entity extends EntityMixin {
 export class EntityChildren extends ChildrenAccessor {
    async label(): Promise<LabelEntity> {
       return this.ofType(LabelEntity, { selector: SVGMetadataUtils.typeAttrOf(LabelEntity) });
+   }
+
+   async attributes(): Promise<Attribute[]> {
+      return this.allOfType(Attribute);
+   }
+}
+
+@ModelElementMetadata({
+   type: 'comp:attribute'
+})
+export class Attribute extends PModelElement {
+   async name(): Promise<string> {
+      return defined(await this.locate().locator('.attribute').textContent());
+   }
+
+   async datatype(): Promise<string> {
+      return defined(await this.locate().locator('.datatype').textContent());
    }
 }

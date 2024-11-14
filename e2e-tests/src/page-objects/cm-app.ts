@@ -2,7 +2,8 @@
  * Copyright (c) 2023 CrossBreeze.
  ********************************************************************************/
 import { IntegrationArgs, TheiaGLSPApp } from '@eclipse-glsp/glsp-playwright';
-import { TheiaEditor } from '@theia/playwright';
+import { Page } from '@playwright/test';
+import { TheiaEditor, TheiaNotificationIndicator, TheiaNotificationOverlay, TheiaWorkspace } from '@theia/playwright';
 import { CMCompositeEditor, IntegratedEditorType } from './cm-composite-editor';
 import { CMExplorerView } from './cm-explorer-view';
 import { CMTheiaIntegration } from './cm-theia-integration';
@@ -24,7 +25,20 @@ export class CMApp extends TheiaGLSPApp {
       );
       await integration.initialize();
       await integration.start();
+      await integration.app.notificationOverlay.waitForEntry('Connected to Model Server on port');
+      await integration.app.notificationOverlay.waitForEntry('Connected to Graphical Server on port');
+      await integration.app.notificationOverlay.clearAllNotifications();
+
       return integration.app;
+   }
+
+   readonly notificationIndicator: TheiaNotificationIndicator;
+   readonly notificationOverlay: TheiaNotificationOverlay;
+
+   public constructor(page: Page, workspace: TheiaWorkspace, isElectron: boolean) {
+      super(page, workspace, isElectron);
+      this.notificationIndicator = this.notificationIndicator = new TheiaNotificationIndicator(this);
+      this.notificationOverlay = this.notificationOverlay = new TheiaNotificationOverlay(this, this.notificationIndicator);
    }
 
    protected _integration: CMTheiaIntegration;

@@ -3,14 +3,17 @@
  ********************************************************************************/
 
 import { TheiaEditor, TheiaTextEditor, TheiaViewData } from '@theia/playwright';
+import { CMApp } from './cm-app';
 import { CMCompositeEditor } from './cm-composite-editor';
 
 export abstract class IntegratedEditor extends TheiaEditor {
+   override app: CMApp;
    constructor(
       data: TheiaViewData,
-      protected readonly parent: CMCompositeEditor
+      readonly parent: CMCompositeEditor
    ) {
       super(data, parent.app);
+      this.app = parent.app;
    }
 
    override async activate(): Promise<void> {
@@ -66,11 +69,13 @@ export abstract class IntegratedEditor extends TheiaEditor {
 }
 
 export abstract class IntegratedTextEditor extends TheiaTextEditor {
+   override app: CMApp;
    constructor(
       filePath: string,
-      protected readonly parent: CMCompositeEditor
+      readonly parent: CMCompositeEditor
    ) {
       super(filePath, parent.app);
+      this.app = parent.app;
    }
 
    override async activate(): Promise<void> {

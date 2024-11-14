@@ -62,21 +62,24 @@ export class CMCompositeEditor extends TheiaEditor {
    async switchToCodeEditor(): Promise<IntegratedCodeEditor> {
       await this.switchToEditor('Code Editor');
       const textEditor = new IntegratedCodeEditor(this.filePath, this, this.editorTabSelector('Code Editor'));
-      await textEditor.waitForVisible();
+      await textEditor.activate();
       return textEditor;
    }
 
    async switchToFormEditor(): Promise<IntegratedFormEditor> {
       await this.switchToEditor('Form Editor');
       const formEditor = new IntegratedFormEditor(this.filePath, this, this.editorTabSelector('Form Editor'));
-      await formEditor.waitForVisible();
+      await formEditor.activate();
+
       return formEditor;
    }
 
    async switchToSystemDiagram(): Promise<IntegratedSystemDiagramEditor> {
       await this.switchToEditor('System Diagram');
       const diagramEditor = new IntegratedSystemDiagramEditor(this.filePath, this, this.editorTabSelector('System Diagram'));
-      await diagramEditor.diagram.graph.waitForVisible();
+      await diagramEditor.waitForVisible();
+      await diagramEditor.activate();
+
       return diagramEditor;
    }
 
@@ -84,6 +87,7 @@ export class CMCompositeEditor extends TheiaEditor {
       await this.switchToEditor('Mapping Diagram');
       const diagramEditor = new IntegratedMappingDiagramEditor(this.filePath, this, this.editorTabSelector('Mapping Diagram'));
       await diagramEditor.waitForVisible();
+      await diagramEditor.activate();
       return diagramEditor;
    }
 }

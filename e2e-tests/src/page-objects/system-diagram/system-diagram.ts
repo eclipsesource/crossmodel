@@ -23,7 +23,8 @@ import {
    PNodeConstructor,
    SVGMetadata,
    SVGMetadataUtils,
-   TypedEdge
+   TypedEdge,
+   waitForFunction
 } from '@eclipse-glsp/glsp-playwright';
 import { Locator } from '@playwright/test';
 import { SystemToolBox } from './system-tool-box';
@@ -46,8 +47,34 @@ export class SystemDiagram extends GLSPSemanticApp {
       return new SystemToolBox({ locator: SystemToolBox.locate(this) });
    }
 }
-
+export interface WaitForModelUpdateOptions {
+   increments: number;
+   match: 'exact' | 'atLeast';
+}
 export class SystemDiagramGraph extends GLSPSemanticGraph {
+   async waitForModelUpdate(
+      executor: () => Promise<void>,
+      options: WaitForModelUpdateOptions = { increments: 1, match: 'atLeast' }
+   ): Promise<void> {
+      const currentRevision = await this.getRevision();
+      const { increments, match } = options;
+      const expectedRevision = currentRevision + increments;
+      await executor();
+      await waitForFunction(async () => {
+         const revision = await this.getRevision();
+         return match === 'exact' ? revision === expectedRevision : expectedRevision <= revision;
+      });
+   }
+
+   async getRevision(): Promise<number> {
+      const revision = await this.locate().getAttribute(`${SVGMetadata.prefix}-revision`);
+      try {
+         return Number.parseInt(revision ?? '0', 10);
+      } catch (err) {
+         return 0;
+      }
+   }
+
    // Temporary fix. The base getNodes methods does not account for "." in ids. The will be falsy treated as class selectors.
    override async getEdgesOfType<TElement extends PEdge, TOptions extends EdgeSearchOptions>(
       constructor: PEdgeConstructor<TElement>,
