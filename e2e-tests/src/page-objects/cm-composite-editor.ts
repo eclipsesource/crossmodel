@@ -8,6 +8,7 @@ import { TheiaMonacoEditor } from '@theia/playwright/lib/theia-monaco-editor';
 import { join } from 'path';
 import { CMApp } from './cm-app';
 import { IntegratedEditor, IntegratedTextEditor } from './cm-integrated-editor';
+import { IntegratedFormEditor } from './form/integrated-form-editor';
 import { IntegratedSystemDiagramEditor } from './system-diagram/integrated-system-diagram-editor';
 
 export type CompositeEditorName = keyof IntegratedEditorType;
@@ -102,24 +103,6 @@ export class IntegratedCodeEditor extends IntegratedTextEditor {
       );
       this.data.tabSelector = tabSelector;
       this.monacoEditor = new TheiaMonacoEditor(this.viewSelector, parent.app);
-   }
-}
-
-export class IntegratedFormEditor extends IntegratedEditor {
-   constructor(filePath: string, parent: CMCompositeEditor, tabSelector: string) {
-      super(
-         {
-            tabSelector,
-            viewSelector: normalizeId(
-               `#form-editor-opener:file://${urlEncodePath(join(parent.app.workspace.escapedPath, OSUtil.fileSeparator, filePath))}`
-            )
-         },
-         parent
-      );
-   }
-
-   async hasError(errorMessage: string): Promise<boolean> {
-      return hasViewError(this.page, this.viewSelector, errorMessage);
    }
 }
 

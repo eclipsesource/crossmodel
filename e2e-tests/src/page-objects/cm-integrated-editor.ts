@@ -2,6 +2,7 @@
  * Copyright (c) 2024 CrossBreeze.
  ********************************************************************************/
 
+import { waitForFunction } from '@eclipse-glsp/glsp-playwright';
 import { TheiaEditor, TheiaTextEditor, TheiaViewData } from '@theia/playwright';
 import { CMApp } from './cm-app';
 import { CMCompositeEditor } from './cm-composite-editor';
@@ -66,6 +67,10 @@ export abstract class IntegratedEditor extends TheiaEditor {
    override title(): Promise<string | undefined> {
       return this.parent.title();
    }
+
+   async waitForDirty(): Promise<void> {
+      await waitForFunction(async () => this.isDirty());
+   }
 }
 
 export abstract class IntegratedTextEditor extends TheiaTextEditor {
@@ -127,5 +132,9 @@ export abstract class IntegratedTextEditor extends TheiaTextEditor {
 
    override title(): Promise<string | undefined> {
       return this.parent.title();
+   }
+
+   async waitForDirty(): Promise<void> {
+      await waitForFunction(async () => this.isDirty());
    }
 }

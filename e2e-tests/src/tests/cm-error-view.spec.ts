@@ -33,7 +33,6 @@ test.describe('CrossModel Error Views', () => {
       expect(editor).toBeDefined();
 
       const codeEditor = await editor.switchToCodeEditor();
-      expect(codeEditor).toBeDefined();
       await codeEditor.addTextToNewLineAfterLineByLineNumber(2, 'break-model');
 
       const diagramEditor = await editor.switchToSystemDiagram();

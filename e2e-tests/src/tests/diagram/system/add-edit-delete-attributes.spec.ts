@@ -8,7 +8,7 @@ import { Attribute } from '../../../page-objects/system-diagram/diagram-elements
 
 test.describe.serial('Add/Edit/Delete attributes to/from an entity in a diagram', () => {
    let app: CMApp;
-   const SYSTEM_DIAGRAM_PATH = 'ExampleCRM/diagrams/CRM.system-diagram.cm';
+   const SYSTEM_DIAGRAM_PATH = 'ExampleCRM/diagrams/EMPTY.system-diagram.cm';
    const ENTITY_PATH = 'ExampleCRM/entities/EmptyEntity.entity.cm';
    const ENTITY_ID = 'EmptyEntity';
 

@@ -8,7 +8,7 @@ import { Entity } from '../../../page-objects/system-diagram/diagram-elements';
 
 test.describe.serial('Add/Edit/Delete entity in a diagram ', () => {
    let app: CMApp;
-   const SYSTEM_DIAGRAM_PATH = 'ExampleCRM/diagrams/CRM.system-diagram.cm';
+   const SYSTEM_DIAGRAM_PATH = 'ExampleCRM/diagrams/EMPTY.system-diagram.cm';
    const NEW_ENTITY_PATH = 'ExampleCRM/entities/NewEntity.entity.cm';
    const NEW_ENTITY_LABEL = 'NewEntity';
    const RENAMED_ENTITY_LABEL = 'NewEntityRenamed';
@@ -31,7 +31,7 @@ test.describe.serial('Add/Edit/Delete entity in a diagram ', () => {
          await taskBounds.position('top_center').moveRelative(0, -100).click();
       });
 
-      // Verify that the entity node was created as expected
+      // Verify that the entity node was created as expected in the diagram
       const newEntity = await diagramEditor.getEntity(NEW_ENTITY_LABEL);
       expect(newEntity).toBeDefined();
 
@@ -68,9 +68,6 @@ test.describe.serial('Add/Edit/Delete entity in a diagram ', () => {
       await properties.saveAndClose();
       await diagramEditor.activate();
       await diagramEditor.saveAndClose();
-
-      const explorer = await app.openExplorerView();
-      await explorer.waitForTreeNodeVisible(NEW_ENTITY_PATH);
 
       const entityCodeEditor = await app.openCompositeEditor(NEW_ENTITY_PATH, 'Code Editor');
 

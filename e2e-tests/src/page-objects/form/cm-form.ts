@@ -4,7 +4,7 @@
 
 import { waitForFunction } from '@eclipse-glsp/glsp-playwright';
 import { ElementHandle, Locator } from '@playwright/test';
-import { TheiaApp, TheiaEditor, TheiaPageObject, TheiaView, isElementVisible } from '@theia/playwright';
+import { TheiaPageObject, TheiaView } from '@theia/playwright';
 import { TheiaViewObject } from '../theia-view-object';
 
 export const FormIcons = {
@@ -60,34 +60,5 @@ export abstract class FormSection extends TheiaPageObject {
    ) {
       super(form.app);
       this.locator = form.locator.locator(`div.MuiAccordion-root:has(h6:has-text("${sectionName}"))`);
-   }
-}
-
-const CMPropertiesViewData = {
-   tabSelector: '#shell-tab-property-view',
-   viewSelector: '#property-view',
-   viewName: 'Properties'
-};
-
-export abstract class CMPropertiesView<F extends CMForm> extends TheiaEditor {
-   protected modelRootSelector = '#model-property-view';
-
-   abstract form(): Promise<F>;
-
-   constructor(app: TheiaApp) {
-      super(CMPropertiesViewData, app);
-   }
-
-   protected async modelPropertyElement(): Promise<ElementHandle<SVGElement | HTMLElement> | null> {
-      return this.page.$(this.viewSelector + ' ' + this.modelRootSelector);
-   }
-
-   isModelPropertyElement(): Promise<boolean> {
-      return isElementVisible(this.modelPropertyElement());
-   }
-
-   override async isDirty(): Promise<boolean> {
-      const form = await this.form();
-      return form.isDirty();
    }
 }

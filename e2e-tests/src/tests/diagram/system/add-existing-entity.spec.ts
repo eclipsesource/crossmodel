@@ -8,7 +8,7 @@ import { Entity } from '../../../page-objects/system-diagram/diagram-elements';
 
 test.describe.serial('Add existing entity to a diagram', () => {
    let app: CMApp;
-   const SYSTEM_DIAGRAM_PATH = 'ExampleCRM/diagrams/CRM.system-diagram.cm';
+   const SYSTEM_DIAGRAM_PATH = 'ExampleCRM/diagrams/EMPTY.system-diagram.cm';
    const CUSTOMER_ID = 'Customer';
 
    test.beforeAll(async ({ browser, playwright }) => {

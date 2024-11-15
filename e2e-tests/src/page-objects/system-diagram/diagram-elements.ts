@@ -3,9 +3,11 @@
  ********************************************************************************/
 import {
    ChildrenAccessor,
+   EdgeMetadata,
    Mix,
    ModelElementMetadata,
    NodeMetadata,
+   PEdge,
    PLabel,
    PModelElement,
    PNode,
@@ -19,6 +21,7 @@ import {
    usePopupCapability,
    useRenameableFlow,
    useResizeHandleCapability,
+   useRoutingPointCapability,
    useSelectableFlow
 } from '@eclipse-glsp/glsp-playwright/';
 
@@ -74,3 +77,14 @@ export class Attribute extends PModelElement {
       return defined(await this.locate().locator('.datatype').textContent());
    }
 }
+
+const RelationshipMixin = Mix(PEdge)
+   .flow(useClickableFlow)
+   .flow(useSelectableFlow)
+   .flow(useDeletableFlow)
+   .capability(useRoutingPointCapability)
+   .build();
+@EdgeMetadata({
+   type: 'edge:relationship'
+})
+export class Relationship extends RelationshipMixin {}

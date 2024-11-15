@@ -6,7 +6,7 @@ import { defined } from '@eclipse-glsp/glsp-playwright';
 import { Locator } from '@playwright/test';
 import { TheiaPageObject } from '@theia/playwright';
 import { TheiaView } from '@theia/playwright/lib/theia-view';
-import { CMForm, CMPropertiesView, FormIcons, FormSection } from './cm-form';
+import { CMForm, FormIcons, FormSection } from './cm-form';
 
 export class EntityForm extends CMForm {
    protected override iconClass = FormIcons.Entity;
@@ -103,6 +103,7 @@ export const EntityDatatype = {
    Bool: 'Bool',
    Text: 'Text'
 } as const;
+
 export type EntityDatatype = keyof typeof EntityDatatype;
 
 export class EntityAttribute extends TheiaPageObject {
@@ -185,13 +186,5 @@ export class EntityAttribute extends TheiaPageObject {
    async delete(): Promise<void> {
       const deleteButton = this.actionsLocator.locator('button[aria-label="Delete"]');
       await deleteButton.click();
-   }
-}
-
-export class EntityPropertiesView extends CMPropertiesView<EntityForm> {
-   async form(): Promise<EntityForm> {
-      const entityForm = new EntityForm(this, this.modelRootSelector);
-      await entityForm.waitForVisible();
-      return entityForm;
    }
 }
