@@ -90,6 +90,6 @@ test.describe.serial('Add/Edit/Delete relationship in a diagram ', () => {
       expect(await diagramCodeEditor.numberOfLines()).toBe(11);
 
       const explorer = await app.openExplorerView();
-      expect(await explorer.existsFileNode(NEW_RELATIONSHIP_PATH)).toBeFalsy();
+      expect(await explorer.findTreeNode(NEW_RELATIONSHIP_PATH)).toBeUndefined();
    });
 });

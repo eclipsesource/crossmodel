@@ -84,7 +84,6 @@ test.describe('Add/Edit/Delete entity from explorer', () => {
       const fileStatElements = await explorer.visibleFileStatNodes();
       await explorer.deleteNode(NEW_ENTITY2_PATH);
       await explorer.waitForFileNodesToDecrease(fileStatElements.length);
-      const updatedFileStatElements = await explorer.visibleFileStatNodes();
-      expect(updatedFileStatElements).toHaveLength(fileStatElements.length - 2);
+      expect(await explorer.findTreeNode(NEW_ENTITY2_PATH)).toBeUndefined();
    });
 });

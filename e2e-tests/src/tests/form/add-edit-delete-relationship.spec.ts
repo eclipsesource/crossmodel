@@ -71,11 +71,9 @@ test.describe('Add/Edit/Delete relationship from explorer', () => {
 
    test('Delete relationship via context menu', async () => {
       const explorer = await app.openExplorerView();
-      await explorer.getFileStatNodeByLabel('ExampleCRM/relationships');
       const fileStatElements = await explorer.visibleFileStatNodes();
       await explorer.deleteNode(NEW_RELATIONSHIP_PATH);
       await explorer.waitForFileNodesToDecrease(fileStatElements.length);
-      const updatedFileStatElements = await explorer.visibleFileStatNodes();
-      expect(updatedFileStatElements).toHaveLength(fileStatElements.length - 1);
+      expect(await explorer.findTreeNode(NEW_RELATIONSHIP_PATH)).toBeUndefined();
    });
 });
