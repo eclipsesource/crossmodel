@@ -54,13 +54,20 @@ export class ModelServer implements Disposable {
    }
 
    protected initialize(connection: rpc.MessageConnection): void {
+      // Standard model hub
       this.toDispose.push(connection.onRequest(OpenModel, args => this.openModel(args)));
       this.toDispose.push(connection.onRequest(CloseModel, args => this.closeModel(args)));
       this.toDispose.push(connection.onRequest(RequestModel, uri => this.requestModel(uri)));
+      this.toDispose.push(connection.onRequest(SaveModel, args => this.saveModel(args)));
+
+      // Command stack / ModelManager
+      this.toDispose.push(connection.onRequest(UpdateModel, args => this.updateModel(args)));
+
+      // Langium-specific
       this.toDispose.push(connection.onRequest(FindReferenceableElements, args => this.complete(args)));
       this.toDispose.push(connection.onRequest(ResolveReference, args => this.resolve(args)));
-      this.toDispose.push(connection.onRequest(UpdateModel, args => this.updateModel(args)));
-      this.toDispose.push(connection.onRequest(SaveModel, args => this.saveModel(args)));
+
+      // Cross-model-specific
       this.toDispose.push(connection.onRequest(RequestSystemInfo, args => this.systemInfo(args)));
       this.toDispose.push(connection.onRequest(RequestSystemInfos, args => this.systemInfos()));
       this.toDispose.push(this.modelService.onSystemUpdated(event => this.connection.sendNotification(OnSystemsUpdated, event)));

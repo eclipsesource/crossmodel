@@ -93,6 +93,9 @@
   ],
   "dependencies": {
     "@crossbreeze/protocol": "0.0.0",
+    "@eclipse-emfcloud/model-manager": "^1.0.2",
+    "@eclipse-emfcloud/model-service": "^1.0.2",
+    "@eclipse-emfcloud/model-service-theia": "^1.2.2",
     "@eclipse-glsp/layout-elk": "2.2.1",
     "@eclipse-glsp/server": "2.2.1",
     "chalk": "~4.1.2",
