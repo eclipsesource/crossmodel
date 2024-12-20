@@ -1,0 +1,11 @@
+{
+  "extends": "../../configs/base.tsconfig",
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "lib",
+    "esModuleInterop": true,
+    "incremental": false,
+    "types": ["node", "reflect-metadata", "mocha", "sinon-chai", "chai-like"]
+  },
+  "include": ["src"]
+}

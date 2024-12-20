@@ -1,0 +1,41 @@
+{
+  "name": "@eclipse-emfcloud/model-index",
+  "version": "0.0.1",
+  "description": "Model Index support.",
+  "repository": "https://github.com/eclipse-emfcloud/model-index",
+  "license": "(EPL-2.0 OR MIT)",
+  "publisher": "EclipseSource GmbH",
+  "main": "lib/index",
+  "types": "lib/index",
+  "files": [
+    "lib",
+    "src",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "clean": "rimraf lib",
+    "clean:coverage": "rimraf .nyc_output coverage",
+    "lint": "eslint --ext .ts,.tsx ./src",
+    "lint:fix": "eslint --fix --ext .ts,.tsx ./src",
+    "prepare": "yarn run clean && yarn run build",
+    "test": "echo 'No code to test yet replace with yarn test:ci'",
+    "test:ci": "mocha --config ../../.mocharc.json \"./src/**/*.spec.?(ts|tsx)\"",
+    "test:coverage": "yarn clean:coverage && nyc yarn test",
+    "watch": "tsc -w"
+  },
+  "dependencies": {
+    "fast-json-patch": "^3.1.1"
+  },
+  "devDependencies": {
+    "rimraf": "^4.1.2",
+    "typescript": "~5.6.3"
+  },
+  "engines": {
+    "node": ">=16.18.0",
+    "yarn": ">=1.7.0 <2.x.x"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  }
+}

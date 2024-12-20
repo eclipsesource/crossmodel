@@ -1,0 +1,44 @@
+{
+  "name": "@eclipse-emfcloud/model-language-server",
+  "version": "0.0.1",
+  "description": "Base customizations for a Langium language server.",
+  "repository": "https://github.com/eclipse-emfcloud/model-manager",
+  "license": "(EPL-2.0 OR MIT)",
+  "publisher": "EclipseSource GmbH",
+  "type": "module",
+  "exports": "./lib/index.js",
+  "main": "lib/index",
+  "types": "lib/index",
+  "files": [
+    "lib",
+    "src",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc -b",
+    "clean": "rimraf lib",
+    "clean:coverage": "rimraf .nyc_output coverage",
+    "lint": "eslint --ext .ts,.tsx ./src",
+    "lint:fix": "yarn lint --fix",
+    "prepare": "yarn run clean && yarn run build",
+    "test": "echo 'yarn test:ci'",
+    "test:ci": "mocha --config ../../.mocharc.json \"./src/**/*.spec.?(ts|tsx)\"",
+    "test:coverage": "yarn clean:coverage && nyc yarn test",
+    "watch": "concurrently -n tsc,esbuild -c blue,yellow \"tsc -b tsconfig.json --watch\" \"node esbuild.mjs --watch\""
+  },
+  "dependencies": {
+    "@eclipse-emfcloud/model-index": "0.0.1",
+    "langium": "^2.0.0",
+    "vscode-uri": "^3.0.2"
+  },
+  "devDependencies": {
+    "typescript": "5.6.3"
+  },
+  "engines": {
+    "node": ">=16.18.0",
+    "yarn": ">=1.7.0 <2.x.x"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  }
+}

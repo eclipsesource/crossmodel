@@ -1,0 +1,49 @@
+{
+  "name": "@eclipse-emfcloud/theia-core",
+  "version": "0.0.1",
+  "description": "Theia Core Services",
+  "repository": "https://github.com/eclipse-emfcloud/model-manager",
+  "license": "(EPL-2.0 OR MIT)",
+  "publisher": "EclipseSource GmbH",
+  "main": "lib/index",
+  "types": "lib/index",
+  "files": [
+    "lib",
+    "src",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "clean": "rimraf lib",
+    "clean:coverage": "rimraf .nyc_output coverage",
+    "lint": "eslint --ext .ts,.tsx ./src",
+    "lint:fix": "eslint --fix --ext .ts,.tsx ./src",
+    "prepare": "yarn run clean && yarn run build",
+    "test": "echo 'yarn test:ci'",
+    "test:ci": "mocha --config ../../.mocharc.json \"./src/**/*.spec.?(ts|tsx)\"",
+    "test:coverage": "echo 'yarn clean:coverage && nyc yarn test'",
+    "watch": "tsc -w"
+  },
+  "devDependencies": {
+    "chai": "^4.3.7",
+    "lodash": "^4.17.21",
+    "rimraf": "^4.1.2",
+    "typescript": "~5.6.3"
+  },
+  "peerDependencies": {
+    "@theia/core": "~1.54.0"
+  },
+  "engines": {
+    "node": ">=16.18.0",
+    "yarn": ">=1.7.0 <2.x.x"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "theiaExtensions": [
+    {
+      "frontend": "lib/browser/core-theia-frontend-module",
+      "backend": "lib/node/core-theia-backend-module"
+    }
+  ]
+}
