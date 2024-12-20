@@ -7,7 +7,9 @@ import { startLanguageServer } from 'langium/lsp';
 import { NodeFileSystem } from 'langium/node';
 import { createConnection, ProposedFeatures } from 'vscode-languageserver/node.js';
 import { startGLSPServer } from './glsp-server/launch.js';
+import { CrossModelLSPServices } from './integration.js';
 import { createCrossModelServices } from './language-server/cross-model-module.js';
+import { createModelHubContainer } from './model-hub/module.js';
 import { startModelServer } from './model-server/launch.js';
 
 /**
@@ -35,4 +37,14 @@ shared.workspace.WorkspaceManager.onWorkspaceInitialized(workspaceFolders => {
    startGLSPServer({ shared, language: CrossModel }, workspaceFolders[0]);
    // Start the JSON server with the shared services
    startModelServer({ shared, language: CrossModel }, workspaceFolders[0]);
+
+   const services: CrossModelLSPServices = { shared, language: CrossModel };
+   // Create ModelHub container
+   const modelHubContainer = createModelHubContainer(services);
+   // Start ModelHub Server
+
+   // TODO Define how the servers should be defined and started
+   // Especially on which port, and if they should be shared or separated.
+   new ModelHubSocketServer(modelHubContainer).start();
+   new CrossModelServiceSocketServer(modelHubContainer).start();
 });

@@ -5,7 +5,7 @@
     "outDir": "lib",
     "esModuleInterop": true,
     "incremental": false,
-    "types": ["node", "reflect-metadata", "mocha", "sinon-chai", "chai-like"]
+    "types": ["node", "reflect-metadata"]
   },
   "include": ["src"]
 }

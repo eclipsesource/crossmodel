@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "workspaces": [
+    "emfcloud-modelmanager/*",
     "packages/*",
     "applications/*",
     "extensions/*",
@@ -33,6 +34,11 @@
     "ui-test": "yarn --cwd e2e-tests ui-test",
     "watch:browser": "lerna run --parallel --ignore=\"crossmodel-app\" watch",
     "watch:electron": "lerna run --parallel --ignore=\"crossmodel-browser-app\" watch"
+  },
+  "resolutions": {
+    "@theia/core": "1.49.1",
+    "@theia/application-package": "1.49.1",
+    "@theia/request": "1.49.1"
   },
   "devDependencies": {
     "@testing-library/react": "^11.2.7",
