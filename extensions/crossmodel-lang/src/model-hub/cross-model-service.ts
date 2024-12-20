@@ -19,4 +19,12 @@ export class CrossModelServiceImpl implements CrossModelService {
    async doSomething(): Promise<void> {
       console.log('Doing something');
    }
+
+   async executeChange(): Promise<void> {
+      // Do changes to model hub model...
+   }
+
+   async discardModelChanges(): Promise<void> {
+      // TODO restore persisted version
+   }
 }

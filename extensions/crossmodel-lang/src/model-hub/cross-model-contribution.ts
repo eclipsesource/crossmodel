@@ -1,22 +1,24 @@
 /********************************************************************************
  * Copyright (c) 2024 CrossBreeze.
  ********************************************************************************/
+import { isCrossModelRoot } from '@crossbreeze/protocol';
 import { ModelManager, PatchCommand } from '@eclipse-emfcloud/model-manager';
 import { AbstractModelServiceContribution, ModelHub, ModelPersistenceContribution } from '@eclipse-emfcloud/model-service';
 import { compare } from 'fast-json-patch';
-import { injectable, postConstruct } from 'inversify';
+import { inject, injectable, postConstruct } from 'inversify';
+import { CrossModelRoot } from '../language-server/generated/ast.js';
+import { ModelService } from '../model-server/model-service.js';
 import { CrossModelServiceImpl } from './cross-model-service.js';
 
 export const CROSS_MODEL_KEY = 'crossmodel';
 
 @injectable()
 export class CrossModelContribution extends AbstractModelServiceContribution {
-   // FIXME Language Server Type is incorrect; we need to clarify which type
-   // we want to use for ModelHub / LanguageServer communication. Should we use
-   // the OpenTextDocumentManager directly, or introduce a service for this?
-   @inject(CrossModelServer) private server: CrossModelServer;
+   @inject(ModelService)
+   private languageServer!: ModelService;
 
-   crossModelService: CrossModelServiceImpl | undefined;
+   private crossModelService!: CrossModelServiceImpl;
+
    constructor() {
       super();
    }
@@ -25,7 +27,7 @@ export class CrossModelContribution extends AbstractModelServiceContribution {
    protected init(): void {
       this.initialize({
          id: CROSS_MODEL_KEY,
-         persistenceContribution: new CrossModelPersistenceContribution(this.server)
+         persistenceContribution: new CrossModelPersistenceContribution(this.languageServer)
       });
       this.crossModelService = new CrossModelServiceImpl();
    }
@@ -36,7 +38,7 @@ export class CrossModelContribution extends AbstractModelServiceContribution {
       (this.persistenceContribution as CrossModelPersistenceContribution).modelManager = modelManager;
    }
 
-   override setModelHub(modelHub: ModelHub<string, unknown>): void {
+   override setModelHub(modelHub: ModelHub<string, string>): void {
       super.setModelHub(modelHub);
       (this.persistenceContribution as CrossModelPersistenceContribution).modelHub = modelHub;
    }
@@ -46,11 +48,17 @@ export class CrossModelContribution extends AbstractModelServiceContribution {
    }
 }
 
-class CrossModelPersistenceContribution implements ModelPersistenceContribution {
-   public modelHub: ModelHub<string, unknown> | undefined;
-   public modelManager: ModelManager<string> | undefined;
+// Currently using a hard-coded value for every change coming
+// through the model hub, as we don't have a way to determine
+// who triggered the change.
+// TODO Consider if we need to be more specific.
+const MODEL_HUB_CLIENT_ID = 'model-hub';
 
-   constructor(private modelServer: CrossModelServer) {
+class CrossModelPersistenceContribution implements ModelPersistenceContribution<string, CrossModelRoot> {
+   public modelHub!: ModelHub<string, string>;
+   public modelManager!: ModelManager<string>;
+
+   constructor(private languageServer: ModelService) {
       // Empty
    }
 
@@ -58,14 +66,19 @@ class CrossModelPersistenceContribution implements ModelPersistenceContribution 
       return true;
    }
 
-   async loadModel(modelId: string): Promise<object> {
-      const model = await this.modelServer.getModel(modelId);
-      if (model === undefined) {
+   async loadModel(modelId: string): Promise<CrossModelRoot> {
+      if (!this.languageServer.isOpen(modelId)) {
+         await this.languageServer.open({ uri: modelId, clientId: MODEL_HUB_CLIENT_ID });
+      }
+      const document = await this.languageServer.request(modelId);
+      if (document === undefined) {
          throw new Error('Failed to load model: ' + modelId);
       }
 
-      this.modelServer.onUpdate(modelId, async (newModel: unknown) => {
+      this.languageServer.onModelUpdated(modelId, async event => {
          try {
+            const updatedDocument = event.document;
+            const newModel = updatedDocument.root;
             const currentModel = await this.modelHub?.getModel(modelId);
             if (currentModel === undefined) {
                throw new Error('Failed to retrieve model: ' + modelId);
@@ -85,12 +98,30 @@ class CrossModelPersistenceContribution implements ModelPersistenceContribution 
          }
       });
 
-      return model;
+      const subscription = this.modelHub.subscribe(modelId);
+      subscription.onModelChanged = (changedModelId: string, newModel: object) => {
+         if (!isCrossModelRoot(newModel)) {
+            console.error(`Invalid model type: ${typeof newModel}`);
+            return;
+         }
+         this.languageServer.update({ uri: changedModelId, clientId: MODEL_HUB_CLIENT_ID, model: newModel });
+      };
+      subscription.onModelUnloaded = (unloadedModelId: string) => {
+         if (modelId === unloadedModelId) {
+            subscription.close();
+         }
+      };
+
+      return document.root;
    }
 
-   async saveModel(modelId: string, model: object): Promise<boolean> {
+   async saveModel(modelId: string, model: CrossModelRoot): Promise<boolean> {
+      if (!isCrossModelRoot(model)) {
+         console.log(`Unable to save model ${modelId}: Not a CrossModelRoot`);
+         return false;
+      }
       try {
-         await this.modelServer.save(modelId, model);
+         await this.languageServer.save({ uri: modelId, clientId: MODEL_HUB_CLIENT_ID, model });
       } catch (error) {
          console.error('Failed to save model' + modelId, error);
          return false;
